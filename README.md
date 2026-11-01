@@ -38,6 +38,15 @@ marketplace apps** (developer forum, 2026-10-01). So v1 bills through Stripe
 and connects Square by OAuth from this site. The marketplace is the
 distribution target once both gates open.
 
+Developer account and app exist (2026-11-01, created as Aidan): app **Block
+Brief**, production id `sq0idp-KAzlxYSV3b_xKnvvYDvzEQ`, sandbox id
+`sandbox-sq0idb-OCIymLblrCZLAcxsHYbbQg`; secrets in `.env` and Vercel. The site
+runs in **sandbox** (`SQUARE_ENV=sandbox`). To go live: in the Developer Console
+→ Block Brief → OAuth → Production, re-enter the redirect URL
+`https://block-brief.vercel.app/api/square/callback` (it was saved mangled on
+11/01), then set `SQUARE_ENV=production` on Vercel and redeploy. Sandbox's
+redirect URL is already correct.
+
 ## Running it
 
     set -a; . ~/Desktop/bricks/.env; set +a        # keys
