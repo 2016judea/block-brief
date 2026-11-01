@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Block Brief</title>
+<meta name="description" content="Every Monday: your Square numbers next to what the city filed within 500 feet of your door. Minneapolis shops. $29 a month.">
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)}</script><script defer src="/_vercel/insights/script.js"></script>
+<style>
+:root{--ink:#17201c;--mut:#5c6660;--line:#dfe5e1;--acc:#1f6f4a;--acc2:#e8f3ec;--bg:#f6f8f6;--warn:#b42318}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 -apple-system,"Segoe UI",Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
+main{max-width:600px;margin:0 auto;padding:28px 18px 70px}
+h1{font-size:30px;line-height:1.15;margin:6px 0 10px;letter-spacing:-.01em}
+h2{font-size:19px;margin:34px 0 10px}
+p{margin:0 0 14px}
+.brand{font-weight:700;letter-spacing:.02em;color:var(--acc);font-size:14px;text-transform:uppercase}
+.mut{color:var(--mut);font-size:14px}
+.lead{font-size:19px}
+.btn{display:inline-block;background:var(--acc);color:#fff;border:0;cursor:pointer;text-decoration:none;font-weight:600;padding:14px 22px;border-radius:10px;font-size:17px;font-family:inherit}
+.btn.sec{background:#fff;color:var(--acc);border:1.5px solid var(--acc)}
+.brief{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 20px 8px;margin:14px 0 6px;box-shadow:0 1px 0 rgba(0,0,0,.03)}
+.brief .hd{font-size:13px;color:var(--mut);margin:0 0 12px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.brief .prose p{font-size:17px}
+.tag{display:inline-block;background:var(--acc2);color:var(--acc);font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;vertical-align:middle}
+table{border-collapse:collapse;font-size:15px;width:100%;margin:6px 0 14px}
+td{padding:5px 0;border-top:1px solid var(--line)}
+td.r{text-align:right;white-space:nowrap}
+td.d{color:var(--mut)}
+.down{color:var(--warn)}
+.sig{list-style:none;padding:0;margin:0 0 10px}
+.sig li{padding:8px 0;border-top:1px solid var(--line);font-size:15px;display:grid;grid-template-columns:62px 1fr;gap:10px}
+.sig .ft{color:var(--mut);font-size:13px;padding-top:2px}
+.sig .k{font-size:12px;color:var(--acc);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+details summary{cursor:pointer;color:var(--acc);font-weight:600;padding:8px 0}
+form.around{display:flex;gap:8px;margin:0 0 10px}
+form.around input{flex:1;min-width:0;font:inherit;font-size:16px;padding:12px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+.price{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 20px;margin:14px 0}
+.price .big{font-size:34px;font-weight:700;letter-spacing:-.02em;margin:0 0 2px}
+#checkout{margin:14px 0 0;min-height:0}
+.err{color:var(--warn);font-size:15px}
+footer{margin-top:50px;font-size:13px;color:var(--mut);border-top:1px solid var(--line);padding-top:14px}
+footer a{color:var(--mut)}
+@media (min-width:700px){main{padding-top:48px}h1{font-size:36px}}
+</style>
+</head>
+<body>
+<main>
+<p class="brand">Block Brief</p>
+<h1>Every Monday, your register next to what the city filed around your door.</h1>
+<p class="lead">Connect your Square. Each Monday one email reads last week's sales and everything Minneapolis and Hennepin County wrote down within 500 feet of your shop: the street dug up, the apartment block going in, the bar that just got its licence, what the county now says your building is worth, what the storefronts near you sold for.</p>
+<p><a class="btn" href="#price">Get it for $29 a month</a> <a class="btn sec" href="#around">See what's filed around you</a></p>
+
+<h2>What last Monday's looked like</h2>
+<p class="mut" id="exnote">A real block, read live: <b>Mosaic Coffee Co., 3040 Hennepin Ave</b>. The permits, licences, county values and sales are the city's own records. The register is a <span class="tag">sample</span>: yours comes from your Square.</p>
+<div class="brief" id="brief">
+  <p class="hd"><span id="bweek">Loading the example…</span><span id="bshop"></span></p>
+  <div class="prose" id="bprose"></div>
+  <details open><summary>The register, day by day</summary><table id="bdays"></table></details>
+  <details><summary>What the city filed within 500 ft</summary><ul class="sig" id="bsig"></ul></details>
+</div>
+
+<h2 id="around">What's filed around your door, right now</h2>
+<p class="mut">Free. Any Minneapolis address. Permits, street and sidewalk work, liquor licences, the county's value for the building. The paid briefing adds your register, the value history and nearby sales, every Monday.</p>
+<form class="around" id="aform"><input id="addr" inputmode="text" autocomplete="street-address" placeholder="3040 Hennepin Ave" aria-label="Street address"><button class="btn" type="submit">Look</button></form>
+<p class="err" id="aerr"></p>
+<div id="aout" hidden><p class="mut" id="ahead"></p><ul class="sig" id="asig"></ul></div>
+
+<h2 id="price">One price</h2>
+<div class="price">
+  <p class="big">$29 a month</p>
+  <p>One briefing every Monday for one shop. Cancel from your receipt email any time.</p>
+  <p class="mut">You pay, then connect Square (read-only). The first briefing lands the next Monday. Minneapolis shops only for now.</p>
+  <p><button class="btn" id="buy">Start: $29 a month</button></p>
+  <p class="err" id="perr"></p>
+  <div id="checkout"></div>
+</div>
+
+<footer>
+<p>Built on the Twin Cities public-records model by <a href="https://brickandmortar.dev">Brick &amp; Mortar</a>. Records: City of Minneapolis (permits, right-of-way permits, liquor licences) and Hennepin County (parcels, values, recorded sales), read live. Square access is read-only and revocable from your Square dashboard. <a href="https://brickandmortar.dev/privacy/">Privacy</a>.</p>
+</footer>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const usd=n=>"$"+Math.round(n).toLocaleString("en-US");
+const KIND={value_change:"County value",new_competitor:"New licence",licence_change:"Licence lapsed",big_build:"New building",tenant_work:"Shop fit-out",demolition:"Demolition",street_work:"Street / sidewalk",comp_sale:"Sold nearby"};
+function sigList(ul,sigs){
+  ul.innerHTML=sigs.map(s=>`<li><span class="ft">${s.distance_ft===0?"here":s.distance_ft+" ft"}</span><span><span class="k">${KIND[s.kind]||s.kind}</span><br>${esc(s.what)}${s.filed_date?` <span class="mut">(${esc(s.filed_date)})</span>`:""}${s.who&&!(s.what||"").includes(s.who)?` <span class="mut">· ${esc(s.who)}</span>`:""}</span></li>`).join("");
+}
+fetch("/example.json").then(r=>r.json()).then(b=>{
+  $("#bweek").textContent="Week of "+b.week_start;
+  $("#bshop").textContent=b.shop.name+", "+b.shop.address;
+  $("#bprose").innerHTML=b.prose.split("\n").filter(p=>p.trim()).map(p=>`<p>${esc(p)}</p>`).join("");
+  $("#bdays").innerHTML=b.register.days.map(d=>`<tr><td class="d">${d.weekday.slice(0,3)} ${d.date.slice(5)}</td><td class="r">${usd(d.gross_usd)}</td><td class="r ${(d.vs_typical_pct||0)<-15?"down":"d"}">${d.vs_typical_pct==null?"":(d.vs_typical_pct>0?"+":"")+d.vs_typical_pct.toFixed(0)+"% vs usual"}</td></tr>`).join("");
+  sigList($("#bsig"),b.records.signals);
+  if(window.va)va("event",{name:"preview_open"}); if(window.posthog)posthog.capture("preview_open");
+}).catch(()=>{$("#bweek").textContent="The example could not load. Refresh.";});
+
+$("#aform").onsubmit=async e=>{
+  e.preventDefault();const a=$("#addr").value.trim();if(!a)return;
+  const b=$("#aform button");b.disabled=true;b.textContent="Reading…";$("#aerr").textContent="";$("#aout").hidden=true;
+  if(window.va)va("event",{name:"around_search"}); if(window.posthog)posthog.capture("around_search");
+  try{
+    const j=await fetch("/api/around?address="+encodeURIComponent(a)).then(r=>r.json());
+    if(j.error)throw new Error(j.error);
+    $("#ahead").innerHTML=`<b>${esc(j.address)}</b> · within ${j.radius_ft} ft since ${esc(j.since)}${j.minneapolis?"":" · outside Minneapolis: city permits and licences will not show"}`;
+    sigList($("#asig"),j.signals.length?j.signals:[{kind:"street_work",distance_ft:0,what:"Nothing filed within 500 ft this half-year. That is a finding too."}]);
+    $("#aout").hidden=false;
+  }catch(x){$("#aerr").textContent=x.message||"Could not read that address.";}
+  finally{b.disabled=false;b.textContent="Look";}
+};
+
+const PK="pk_live_51TUvvcBzD4mN8eOD28H6oQkFwFHwF1SLtWxN1vHRmnSxntWFefgd33mEIVmjv8ekxWgkZft3OpPlzmVXMIeHPBwj003998hjTf";
+let CO=null;
+const loadStripe=()=>window.Stripe?Promise.resolve():new Promise((ok,no)=>{const sc=document.createElement("script");sc.src="https://js.stripe.com/dahlia/stripe.js";sc.onload=ok;sc.onerror=no;document.head.appendChild(sc)});
+$("#buy").onclick=async()=>{
+  const b=$("#buy");$("#perr").textContent="";
+  if(window.va)va("event",{name:"checkout_open"}); if(window.posthog)posthog.capture("checkout_open");
+  if(CO){$("#checkout").scrollIntoView({behavior:"smooth",block:"start"});return}
+  b.disabled=true;const t=b.textContent;b.textContent="Loading secure checkout…";
+  try{
+    await loadStripe();const st=Stripe(PK);
+    const opts={fetchClientSecret:()=>fetch("/api/checkout",{method:"POST"}).then(r=>r.json()).then(j=>{if(!j.clientSecret)throw new Error(j.error||"Checkout could not start.");return j.clientSecret})};
+    CO=await (st.createEmbeddedCheckoutPage?st.createEmbeddedCheckoutPage(opts):st.initEmbeddedCheckout(opts));
+    CO.mount("#checkout");setTimeout(()=>$("#checkout").scrollIntoView({behavior:"smooth",block:"start"}),300);
+  }catch(x){CO=null;$("#perr").textContent="Checkout didn't load. Refresh and try again, or email aidan@brickandmortar.dev.";}
+  finally{b.disabled=false;b.textContent=t}
+};
+</script>
+<!-- bm-posthog:begin v2 — shared across every Vercel prototype; source ~/.claude/skills/site-analytics/posthog_snippet.html. ?me=1 opts this browser out on this site (?me=0 undoes); ?me=1&next=host1,host2 walks the opt-out across sites; headless (navigator.webdriver) never loads it. -->
+<script>
+(function(w,d){var S="block-brief",K="bm_me",me=false,u,p,n;
+try{u=new URLSearchParams(location.search);p=u.get("me");n=u.get("next");}catch(e){}
+try{if(p==="1"){localStorage.setItem(K,"1");}else if(p==="0"){localStorage.removeItem(K);}}catch(e){}
+if(p==="1"){d.cookie=K+"=1; path=/; max-age=63072000; SameSite=Lax";}else if(p==="0"){d.cookie=K+"=; path=/; max-age=0; SameSite=Lax";}
+try{me=localStorage.getItem(K)==="1";}catch(e){}
+if(!me&&/(?:^|; )bm_me=1/.test(d.cookie))me=true;
+if(p==="1"&&n){var h=n.split(","),f=h.shift();if(/^[a-z0-9.-]+$/.test(f)&&(f.slice(-11)===".vercel.app"||f==="brickandmortar.dev"||f==="readglean.com")){location.replace("https://"+f+"/?me=1"+(h.length?"&next="+h.join(","):""));}}
+if(navigator.webdriver===true)return;
+!function(t,e){var o,n,p,r;e.__SV||(w.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once unregister identify setPersonProperties reset get_distinct_id get_session_id alias set_config startSessionRecording stopSessionRecording opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing captureException getFeatureFlag isFeatureEnabled onFeatureFlags".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(d,w.posthog||[]);
+posthog.init("phc_yFgRGppL6H7DvhgZTQKbHdrY5oqnpLT482rrNYtLqnAx",{api_host:"https://us.i.posthog.com",person_profiles:"identified_only",persistence:"localStorage+cookie",opt_out_capturing_by_default:me});
+if(me){posthog.opt_out_capturing();}else{if(p==="0")posthog.opt_in_capturing();posthog.register({site:S});}
+})(window,document);
+</script>
+<!-- bm-posthog:end -->
+</body>
+</html>
