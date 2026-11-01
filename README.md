@@ -41,11 +41,13 @@ distribution target once both gates open.
 Developer account and app exist (2026-11-01, created as Aidan): app **Block
 Brief**, production id `sq0idp-KAzlxYSV3b_xKnvvYDvzEQ`, sandbox id
 `sandbox-sq0idb-OCIymLblrCZLAcxsHYbbQg`; secrets in `.env` and Vercel. The site
-runs in **sandbox** (`SQUARE_ENV=sandbox`). To go live: in the Developer Console
-→ Block Brief → OAuth → Production, re-enter the redirect URL
-`https://block-brief.vercel.app/api/square/callback` (it was saved mangled on
-11/01), then set `SQUARE_ENV=production` on Vercel and redeploy. Sandbox's
-redirect URL is already correct.
+runs in **production** (`SQUARE_ENV=production` on Vercel and in `.env`, since
+2026-11-01 evening): the production redirect URL in the Developer Console →
+Block Brief → OAuth → Production reads exactly
+`https://block-brief.vercel.app/api/square/callback` (it had saved mangled
+earlier that day; re-entered and read back off `/api/portal/oauth-clients`).
+Flip `SQUARE_ENV=sandbox` to test against the sandbox seller again; sandbox's
+redirect URL is also correct.
 
 ## Running it
 
