@@ -15,9 +15,10 @@ async function geocode(addr) {
 async function pinFor(lat, lon, houseNo) {
   // Hennepin's live parcel layer. A geocoded point sits on the street centreline, inside no
   // parcel, so buffer 80 ft and prefer the parcel whose house number matches. Minneapolis only in v1.
-  const q = new URLSearchParams({ geometry: `${lon},${lat}`, geometryType: "esriGeometryPoint", inSR: "4326", distance: "80", units: "esriSRUnit_Foot", spatialRel: "esriSpatialRelIntersects", outFields: "PID,HOUSE_NO,MUNIC_NM", returnGeometry: "false", f: "json" });
+  const q = new URLSearchParams({ geometry: `${lon},${lat}`, geometryType: "esriGeometryPoint", inSR: "4326", distance: "250", units: "esriSRUnit_Foot", spatialRel: "esriSpatialRelIntersects", outFields: "PID,HOUSE_NO,STREET_NM,MUNIC_NM,LAT,LON", returnGeometry: "false", f: "json" });
   const j = await (await fetch(`https://gis.hennepin.us/arcgis/rest/services/HennepinData/LAND_PROPERTY/MapServer/1/query?${q}`)).json();
   const fs = (j.features || []).map((f) => f.attributes);
+  fs.sort((a, b) => Math.abs(a.HOUSE_NO - houseNo) - Math.abs(b.HOUSE_NO - houseNo));
   return fs.find((f) => f.HOUSE_NO === houseNo) || fs[0] || null;
 }
 
