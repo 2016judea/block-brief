@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!-- Monday 06:10 local: every active owner's briefing. launchd cannot read ~/Desktop
+       directly (reference_launchd_cannot_read_desktop), so the job runs a copy of the
+       runner from ~/Library/Application Support/block-brief, which symlinks back. Install:
+         mkdir -p ~/Library/Application\ Support/block-brief
+         ln -sfn ~/Desktop/block-brief ~/Library/Application\ Support/block-brief/repo
+         cp launchd/run_monday.sh ~/Library/Application\ Support/block-brief/
+         cp launchd/dev.brickandmortar.block-brief.plist ~/Library/LaunchAgents/
+         launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/dev.brickandmortar.block-brief.plist -->
+  <key>Label</key><string>dev.brickandmortar.block-brief</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>/Users/aidan/Library/Application Support/block-brief/run_monday.sh</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <dict><key>Weekday</key><integer>1</integer><key>Hour</key><integer>6</integer><key>Minute</key><integer>10</integer></dict>
+  <key>StandardOutPath</key><string>/Users/aidan/Library/Logs/block-brief.log</string>
+  <key>StandardErrorPath</key><string>/Users/aidan/Library/Logs/block-brief.log</string>
+</dict>
+</plist>

@@ -35,7 +35,9 @@ module.exports = async (req, res) => {
     const lat = m.coordinates.y, lon = m.coordinates.x;
     const since = new Date(Date.now() - 26 * 7 * 86400e3).toISOString().slice(0, 10);
     const [pq, permits, row, onsale, offsale] = await Promise.all([
-      (async () => { const q = new URLSearchParams({ geometry: `${lon},${lat}`, geometryType: "esriGeometryPoint", inSR: "4326", spatialRel: "esriSpatialRelIntersects", outFields: "PID,HOUSE_NO,STREET_NM,MUNIC_NM,MKT_VAL_TOT,TAX_TOT,OWNER_NM,PR_TYP_NM1,SALE_DATE,SALE_PRICE", returnGeometry: "false", f: "json" }); return (await (await fetch(`${HENN}?${q}`)).json()).features?.[0]?.attributes || null; })(),
+      // A geocoded address sits on the street centreline, inside no parcel: buffer 80 ft and
+      // take the parcel whose house number matches, else the first.
+      (async () => { const q = new URLSearchParams({ geometry: `${lon},${lat}`, geometryType: "esriGeometryPoint", inSR: "4326", distance: "80", units: "esriSRUnit_Foot", spatialRel: "esriSpatialRelIntersects", outFields: "PID,HOUSE_NO,STREET_NM,MUNIC_NM,MKT_VAL_TOT,TAX_TOT,OWNER_NM,PR_TYP_NM1,SALE_DATE,SALE_PRICE", returnGeometry: "false", f: "json" }); const fs = ((await (await fetch(`${HENN}?${q}`)).json()).features || []).map((f) => f.attributes); const no = Number((m.matchedAddress.match(/^\d+/) || [])[0]); return fs.find((f) => f.HOUSE_NO === no) || fs[0] || null; })(),
       arc(`${MPLS}/CCS_Permits/FeatureServer/0/query`, `issueDate >= date '${since}'`, lat, lon, "Display,Latitude,Longitude,permitType,occupancyType,workType,comments,issueDate,applicantName,totalFees,status"),
       arc(`${MPLS}/PWROW_Admin_Utility_Sidewalk_Permits_AGO_en_us_readonly/FeatureServer/0/query`, `Processed_Date >= date '${since}'`, lat, lon, "Display,Processed_Date,Expiration_Date,Permit_Type,Permit_Detail,Comments,Applicant_Name,Latitude,Longitude,Status__Permit_"),
       arc(`${MPLS}/On_Sale_Liquor/FeatureServer/0/query`, "1=1", lat, lon, "licenseName,licenseType,licenseStatus,issueDate,address,lat,long,endorsements"),
@@ -52,10 +54,23 @@ module.exports = async (req, res) => {
       else if (r.permitType === "Commercial" && ["Comm", "Mixed"].includes(r.occupancyType) && (r.totalFees || 0) >= 500) out.push({ kind: "tenant_work", ...base });
     }
     const words = { SidwlkConB: "sidewalk closed for work", Utility: "utility line work", Water: "water tap", Sewer: "sewer work", Excavation: "street dug up" };
+    const grouped = new Map(); // one line per (address, applicant): a new building files seven taps in a week
     for (const r of row) {
       const d = dist(lat, lon, r.Latitude, r.Longitude); if (d > R) continue;
-      let what = words[r.Permit_Type] || r.Permit_Type; if (r.Permit_Detail && !["N", "Y"].includes(r.Permit_Detail)) what += `: ${r.Permit_Detail}`; if (r.Comments) what += ". " + r.Comments.replace(/\s+/g, " ").trim().slice(0, 140);
-      out.push({ kind: "street_work", filed_date: day(r.Processed_Date), end_date: day(r.Expiration_Date), address: r.Display, distance_ft: Math.round(d), what, who: company(r.Applicant_Name) ? r.Applicant_Name : null, status: r.Status__Permit_ });
+      const head = words[r.Permit_Type] || r.Permit_Type;
+      let what = head; if (r.Permit_Detail && !["N", "Y"].includes(r.Permit_Detail)) what += `: ${r.Permit_Detail}`; if (r.Comments) what += ". " + r.Comments.replace(/\s+/g, " ").trim().slice(0, 140);
+      const who = company(r.Applicant_Name) ? r.Applicant_Name : null;
+      const k = `${r.Display}|${who}`;
+      const g = grouped.get(k) || { kind: "street_work", filed_date: day(r.Processed_Date), end_date: day(r.Expiration_Date), address: r.Display, distance_ft: Math.round(d), what, who, status: r.Status__Permit_, n_permits: 0, kinds: new Set() };
+      g.n_permits += 1; g.kinds.add(head);
+      if (day(r.Processed_Date) < g.filed_date) g.filed_date = day(r.Processed_Date);
+      if ((day(r.Expiration_Date) || "") > (g.end_date || "")) g.end_date = day(r.Expiration_Date);
+      grouped.set(k, g);
+    }
+    for (const g of grouped.values()) {
+      const kinds = [...g.kinds].sort(); delete g.kinds;
+      if (g.n_permits > 1) g.what = `${g.n_permits} permits (${kinds.join(", ")})${g.who ? ` for ${g.who}` : ""}, ${g.filed_date} to ${g.end_date}`;
+      out.push(g);
     }
     for (const [rows, sale] of [[onsale, "on-sale"], [offsale, "off-sale"]]) for (const r of rows) {
       const d = dist(lat, lon, r.lat, r.long); if (d > R) continue;

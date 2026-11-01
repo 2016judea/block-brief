@@ -12,11 +12,13 @@ async function geocode(addr) {
   return m ? { lat: m.coordinates.y, lon: m.coordinates.x, matched: m.matchedAddress } : null;
 }
 
-async function pinFor(lat, lon) {
-  // Hennepin's live parcel layer, point-in-polygon. Minneapolis only in v1.
-  const q = new URLSearchParams({ geometry: `${lon},${lat}`, geometryType: "esriGeometryPoint", inSR: "4326", spatialRel: "esriSpatialRelIntersects", outFields: "PID,MUNIC_NM", returnGeometry: "false", f: "json" });
+async function pinFor(lat, lon, houseNo) {
+  // Hennepin's live parcel layer. A geocoded point sits on the street centreline, inside no
+  // parcel, so buffer 80 ft and prefer the parcel whose house number matches. Minneapolis only in v1.
+  const q = new URLSearchParams({ geometry: `${lon},${lat}`, geometryType: "esriGeometryPoint", inSR: "4326", distance: "80", units: "esriSRUnit_Foot", spatialRel: "esriSpatialRelIntersects", outFields: "PID,HOUSE_NO,MUNIC_NM", returnGeometry: "false", f: "json" });
   const j = await (await fetch(`https://gis.hennepin.us/arcgis/rest/services/HennepinData/LAND_PROPERTY/MapServer/1/query?${q}`)).json();
-  return j.features?.[0]?.attributes || null;
+  const fs = (j.features || []).map((f) => f.attributes);
+  return fs.find((f) => f.HOUSE_NO === houseNo) || fs[0] || null;
 }
 
 module.exports = async (req, res) => {
@@ -38,7 +40,7 @@ module.exports = async (req, res) => {
     const a = loc?.address || {};
     const addr = [a.address_line_1, a.locality, a.administrative_district_level_1, a.postal_code].filter(Boolean).join(", ");
     const geo = addr ? await geocode(addr) : null;
-    const parcel = geo ? await pinFor(geo.lat, geo.lon) : null;
+    const parcel = geo ? await pinFor(geo.lat, geo.lon, Number((geo.matched.match(/^\d+/) || [])[0])) : null;
 
     await d1(
       "update owners set merchant_id=?, location_id=?, shop_name=?, address=?, lat=?, lon=?, parcel_pin=?, token_blob=?, token_expires_at=?, updated_at=datetime('now') where owner_id=?",
