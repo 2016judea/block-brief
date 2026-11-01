@@ -1,7 +1,7 @@
 // GET /api/square/connect?session_id=cs_… -> 302 to Square's OAuth page.
 // The Stripe session must be ours and paid (or a comp). The owner row is created here,
 // keyed on the Stripe customer, so the callback has somewhere to put the token.
-const { stripe, d1, signState, SQUARE, PRODUCT, need } = require("../_lib");
+const { stripe, d1, signState, SQUARE, PRODUCT } = require("../_lib");
 
 const SCOPES = ["MERCHANT_PROFILE_READ", "PAYMENTS_READ", "ORDERS_READ"];
 
@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
       [ownerId, email, s.id, s.customer || null, s.subscription || null],
     );
     const u = new URL(SQUARE().authorize);
-    u.searchParams.set("client_id", need("SQUARE_APPLICATION_ID"));
+    u.searchParams.set("client_id", SQUARE().appId);
     u.searchParams.set("scope", SCOPES.join(" "));
     u.searchParams.set("session", "false");
     u.searchParams.set("state", signState(ownerId));

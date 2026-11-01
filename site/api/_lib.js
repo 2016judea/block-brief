@@ -60,9 +60,14 @@ function checkState(state) {
   return mac.length === want.length && crypto.timingSafeEqual(Buffer.from(mac), Buffer.from(want)) ? ownerId : null;
 }
 
-const SQUARE = () => (process.env.SQUARE_ENV === "production"
-  ? { connect: "https://connect.squareup.com", authorize: "https://connect.squareup.com/oauth2/authorize" }
-  : { connect: "https://connect.squareupsandbox.com", authorize: "https://connect.squareupsandbox.com/oauth2/authorize" });
+// SQUARE_ENV picks the host AND the credential pair: sandbox-sq0idb-… only works against the
+// sandbox host, sq0idp-… only against production. Flipping one without the other 401s.
+const PROD = () => process.env.SQUARE_ENV === "production";
+const SQUARE = () => (PROD()
+  ? { connect: "https://connect.squareup.com", authorize: "https://connect.squareup.com/oauth2/authorize",
+      appId: need("SQUARE_PROD_APPLICATION_ID"), secret: need("SQUARE_PROD_APPLICATION_SECRET") }
+  : { connect: "https://connect.squareupsandbox.com", authorize: "https://connect.squareupsandbox.com/oauth2/authorize",
+      appId: need("SQUARE_APPLICATION_ID"), secret: need("SQUARE_APPLICATION_SECRET") });
 
 async function square(path, token, { method = "GET", body } = {}) {
   const r = await fetch(`${SQUARE().connect}${path}`, {

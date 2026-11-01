@@ -2,7 +2,7 @@
 // Exchanges the code (ObtainToken), reads the merchant's main location for the shop's
 // name and address, geocodes it, seals the tokens into the owner row, and lands on
 // /connected/. The token is AES-GCM sealed; the key is an env var, never in source.
-const { square, SQUARE, d1, sealToken, checkState, need, SITE } = require("../_lib");
+const { square, SQUARE, d1, sealToken, checkState, SITE } = require("../_lib");
 
 async function geocode(addr) {
   // Census geocoder: free, no key. Returns null when the address does not match.
@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
     const tok = await (await fetch(`${SQUARE().connect}/oauth2/token`, {
       method: "POST",
       headers: { "content-type": "application/json", "Square-Version": "2026-09-16" },
-      body: JSON.stringify({ client_id: need("SQUARE_APPLICATION_ID"), client_secret: need("SQUARE_APPLICATION_SECRET"), code, grant_type: "authorization_code" }),
+      body: JSON.stringify({ client_id: SQUARE().appId, client_secret: SQUARE().secret, code, grant_type: "authorization_code" }),
     })).json();
     if (!tok.access_token) throw new Error(`obtain token: ${JSON.stringify(tok).slice(0, 300)}`);
 
