@@ -40,7 +40,7 @@ The legal name is "Brick and Mortar AI LLC" ("and", not "&"), per the IRS EIN le
 | Phone | 612-836-7262 |
 | Company website | https://brickandmortar.dev |
 | Product website | https://block-brief.vercel.app |
-| Business mailing address | *(not in repo or memory, left blank)* |
+| Business mailing address | 1651 Eleanor Ave, Saint Paul, MN 55116 (registered office on the Articles and the IRS EIN letter) |
 | Company size | 1 |
 
 ### Integration name
@@ -110,7 +110,6 @@ restaurant can use it today.
 
 ## Left blank
 
-- Business mailing address: not in the repo or memory.
 - Any step-3 field that isn't covered above: the form isn't visible until
   Toast sends the step-1 email.
 
