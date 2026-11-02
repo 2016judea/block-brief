@@ -121,3 +121,12 @@ restaurant can use it today.
 2. Wait for Toast's email at aidan@brickandmortar.dev. Open the application
    link in it.
 3. Paste the step-3 answers above into its fields and submit.
+
+## Held 2026-11-01: I Agree NOT clicked
+
+Read the full licence (saved beside this file) before clicking. §4.8 obliges the LLC, from the
+moment of I Agree, to carry at its own expense: general liability $1M/$2M (Toast as additional
+insured), E&O $2M, and **cyber liability $5M per occurrence**, with certificates on request. That
+is a recurring spend, so it's a money gate. Also binding: arbitration (§14), a 6-month non-solicit
+of Toast merchants with 2x-revenue liquidated damages (§7.3), Toast Data may not feed
+"aggregated datasets for sale" (§11), audit rights (§4.7). Waiting on Aidan.
