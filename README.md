@@ -46,14 +46,38 @@ response Code). Secret in `.env` and Vercel (`CLOVER_APP_ID`, `CLOVER_APP_SECRET
 → authorize → `/clover/callback` → `/connected/?pos=clover`, D1 row
 `cl_4ZNNY5AK5SNT1` with a sealed pair, Monday dry-run through `clover_days()`.
 
-Production needs, in order: the production developer account **verified**
-(Developer Settings: legal name, DOB, home address, business EIN, OFAC), then a
-production app of type **App Market app** (that type only exists with the Sandbox
-toggle off) with the same settings, `CLOVER_PROD_APP_ID/SECRET` on Vercel and
-`CLOVER_ENV=production`, a bank account on the developer account, a $29 tier under
-Pricing & Distribution, and the Market Listing (icon, screenshots, 3 benefits,
-privacy + TOS URLs, support email/site/phone, walkthrough video) submitted for
-review. Where that stands is in the commit log.
+Production app **Block Brief** `T2GTSDQ5FCTQ4` (NA production, type **App Market
+app** + Web, same permissions and REST configuration as the sandbox app; secret in
+`.env` and Vercel as `CLOVER_PROD_APP_*`, `CLOVER_ENV=production`, so the live
+Connect Clover button already points at `www.clover.com`). Production developer id
+`YRGPCMT5T4Z5Y`.
+
+Where the listing stands (2026-11-01, evening):
+
+- Developer Settings: Account Details saved as a **Business** (Brick and Mortar
+  AI LLC, EIN, 1651 Eleanor Ave), Contact Info saved (emergency
+  aidanjude2016@gmail.com). **Identity Verification is not saved: the form
+  requires Aidan's date of birth, which is nowhere on this machine.** Until he
+  types it and clicks "Verify Your Account", Clover will not review the app.
+- Market Listing: tagline, description, legal (EULA `/terms/`, privacy
+  `brickandmortar.dev/privacy/`), support (612-836-7262, Mon–Fri 9–5 Central,
+  aidan@brickandmortar.dev, block-brief.vercel.app) and categorization (Reporting
+  & Analytics; restaurants, bars, bakeries, salons, barbers, book stores, florists,
+  grocery, pet, toy, other retail) are saved. **Not saved: the three merchant
+  benefits, the icon, the cover and the screenshots.** The dashboard's image
+  uploader opens a crop pop-up whose Submit ignored every automated click, and
+  the benefits dialog could not be told apart from the others by automation;
+  `listing/` holds the icon (`icon-512.png`), cover (`cover-1080x216.png`) and four
+  screenshots ready to drag in by hand, and `icon-512.png` is currently attached
+  as a *screenshot* by mistake (remove it under Manage Screenshots). Benefits to
+  paste: see `listing/BENEFITS.md`.
+- Walkthrough video for the functional review:
+  https://block-brief.vercel.app/listing/walkthrough.mp4 (27 s, the public pages;
+  the listing's own video field only takes YouTube/Vimeo URLs).
+- Pricing & Distribution: a $29 tier needs a **bank account on the developer
+  account first** (Developer Settings), which is his to enter.
+
+Then "Submit App" on the production app.
 
 ## Square
 
