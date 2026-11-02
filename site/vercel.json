@@ -28,6 +28,10 @@
     {
       "source": "/clover/callback",
       "destination": "/api/clover/callback"
+    },
+    {
+      "source": "/terms",
+      "destination": "/terms/index.html"
     }
   ]
 }
