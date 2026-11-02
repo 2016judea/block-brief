@@ -13,8 +13,8 @@ model is what makes the briefing smart; it is not the thing being sold.
 
 ## How it works
 
-1. The owner pays ($29/month, Stripe embedded checkout, `site/api/checkout.js`), then connects their Square account read-only (`site/api/square/connect.js` → Square OAuth → `site/api/square/callback.js`). The callback reads their main location's address, geocodes it, finds the Hennepin parcel, and seals the tokens (AES-256-GCM) into a Cloudflare D1 row.
-2. Every Monday 06:10 (`launchd/dev.brickandmortar.block-brief.plist`) `pipeline/brief.py --all` runs on the Mac that holds the bricks substrate. Per owner: Square `GET /v2/payments` for the trailing nine weeks → day buckets; `pipeline/signals.py` → every record within 500 ft (city permits, right-of-way permits, liquor licences, the parcel's county value and its history, commercial sales within 1,500 ft); `claude-sonnet-5-5` writes the prose from that JSON only; a check refuses to send if the prose carries a figure the JSON does not; Mailgun sends it.
+1. The owner pays ($29/month, Stripe embedded checkout, `site/api/checkout.js`), then connects their register read-only: Square (`site/api/square/connect.js` → Square OAuth → `site/api/square/callback.js`) or Clover (`site/api/clover/connect.js` → Clover OAuth v2 → `/clover/callback`). Either callback reads the location's name and address, geocodes it, finds the Hennepin parcel, and seals the tokens (AES-256-GCM) into a Cloudflare D1 row (`owners.pos_provider` says which register). A merchant who installs Block Brief from the **Clover App Market** skips Stripe: Clover bills them, and `/clover?merchant_id=…` (the app's Site URL, `site/api/clover/launch.js`) creates their row on the way through OAuth.
+2. Every Monday 06:10 (`launchd/dev.brickandmortar.block-brief.plist`) `pipeline/brief.py --all` runs on the Mac that holds the bricks substrate. Per owner: Square `GET /v2/payments` or Clover `GET /v3/merchants/{mId}/payments` (refresh tokens rotated first; they are single-use) for the trailing nine weeks → day buckets; `pipeline/signals.py` → every record within 500 ft (city permits, right-of-way permits, liquor licences, the parcel's county value and its history, commercial sales within 1,500 ft); `claude-sonnet-5-5` writes the prose from that JSON only; a check refuses to send if the prose carries a figure the JSON does not; Mailgun sends it.
 3. The landing page opens on a real block, read live: Mosaic Coffee Co., 3040 Hennepin Ave. The records are the city's and the county's own rows; the register is a labelled sample, because no one has connected that shop's Square. `pipeline/brief.py --example` rebuilds it.
 4. Free slice (`site/api/around.js`): any Minneapolis address → what is filed within 500 ft right now, no login. The paid briefing adds the register, the value history and the sales.
 
@@ -24,6 +24,36 @@ model is what makes the briefing smart; it is not the thing being sold.
 checked field by field. The things that cannot be filled are listed there with
 what they cost (day-ranged street closures, a parcel's own appeal date,
 competitors in unlicensed trades, Saint Paul).
+
+## Clover
+
+`MARKETPLACES.md` is the 11/01 read of seven POS marketplaces; Clover is the only
+one open to a new developer without a sales call or a fee, and **Clover bills the
+merchant** (monthly tiers, 70% to the developer, no active-merchant minimum). Tool
+skill: `~/.claude/skills/clover-api/SKILL.md`.
+
+Developer account (2026-11-01, as Aidan): login `aidan@brickandmortar.dev`,
+password + TOTP secret in `.env` (`CLOVER_LOGIN_PASSWORD`, `CLOVER_TOTP_SECRET`),
+Developer Account Name **Brick & Mortar**, regions Latin America (the accidental
+default) and North America (the one in use), developer id `R7XD0E0S48V0P`.
+
+Sandbox app **Block Brief** `42R6YZF78NXY4` (NA sandbox, type Private + Web,
+permissions Merchant/Orders/Payments read, Site URL
+`https://block-brief.vercel.app/clover`, Alternate Launch Path `/clover`, OAuth
+response Code). Secret in `.env` and Vercel (`CLOVER_APP_ID`, `CLOVER_APP_SECRET`,
+`CLOVER_ENV=sandbox`). Driven end to end on 11/01 with the sandbox test merchant
+`4ZNNY5AK5SNT1`: install from the sandbox App Market → Open the app → `/clover`
+→ authorize → `/clover/callback` → `/connected/?pos=clover`, D1 row
+`cl_4ZNNY5AK5SNT1` with a sealed pair, Monday dry-run through `clover_days()`.
+
+Production needs, in order: the production developer account **verified**
+(Developer Settings: legal name, DOB, home address, business EIN, OFAC), then a
+production app of type **App Market app** (that type only exists with the Sandbox
+toggle off) with the same settings, `CLOVER_PROD_APP_ID/SECRET` on Vercel and
+`CLOVER_ENV=production`, a bank account on the developer account, a $29 tier under
+Pricing & Distribution, and the Market Listing (icon, screenshots, 3 benefits,
+privacy + TOS URLs, support email/site/phone, walkthrough video) submitted for
+review. Where that stands is in the commit log.
 
 ## Square
 
@@ -57,8 +87,10 @@ redirect URL is also correct.
     python3 scripts/deploy.py                       # Vercel, REST, public/ + api/
 
 `.env` (gitignored): `ACCESS_SECRET`, `SQUARE_ENV`, `SQUARE_APPLICATION_ID`,
-`SQUARE_APPLICATION_SECRET`, `SQUARE_LOGIN_EMAIL`, `SQUARE_LOGIN_PASSWORD`.
-Vercel carries the same plus Stripe, Cloudflare and Mailgun.
+`SQUARE_APPLICATION_SECRET`, `SQUARE_LOGIN_EMAIL`, `SQUARE_LOGIN_PASSWORD`,
+`CLOVER_ENV`, `CLOVER_APP_ID`, `CLOVER_APP_SECRET`, `CLOVER_LOGIN_EMAIL`,
+`CLOVER_LOGIN_PASSWORD`, `CLOVER_TOTP_SECRET`. Vercel carries the app ones plus
+Stripe, Cloudflare and Mailgun (`scripts/vercel_env.py KEY…` pushes from `.env`).
 
 ## Price
 
