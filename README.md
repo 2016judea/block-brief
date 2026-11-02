@@ -52,30 +52,16 @@ app** + Web, same permissions and REST configuration as the sandbox app; secret 
 Connect Clover button already points at `www.clover.com`). Production developer id
 `YRGPCMT5T4Z5Y`.
 
-Where the listing stands (2026-11-01, evening):
+Where the listing stands (2026-11-01, 8 pm):
 
-- Developer Settings: Account Details saved as a **Business** (Brick and Mortar
-  AI LLC, EIN, 1651 Eleanor Ave), Contact Info saved (emergency
-  aidanjude2016@gmail.com). **Identity Verification is not saved: the form
-  requires Aidan's date of birth, which is nowhere on this machine.** Until he
-  types it and clicks "Verify Your Account", Clover will not review the app.
-- Market Listing: tagline, description, legal (EULA `/terms/`, privacy
-  `brickandmortar.dev/privacy/`), support (612-836-7262, Mon–Fri 9–5 Central,
-  aidan@brickandmortar.dev, block-brief.vercel.app) and categorization (Reporting
-  & Analytics; restaurants, bars, bakeries, salons, barbers, book stores, florists,
-  grocery, pet, toy, other retail) are saved. **Not saved: the three merchant
-  benefits, the icon, the cover and the screenshots.** The dashboard's image
-  uploader opens a crop pop-up whose Submit ignored every automated click, and
-  the benefits dialog could not be told apart from the others by automation;
-  `listing/` holds the icon (`icon-512.png`), cover (`cover-1080x216.png`) and four
-  screenshots ready to drag in by hand, and `icon-512.png` is currently attached
-  as a *screenshot* by mistake (remove it under Manage Screenshots). Benefits to
-  paste: see `listing/BENEFITS.md`.
-- Walkthrough video for the functional review:
-  https://block-brief.vercel.app/listing/walkthrough.mp4 (27 s, the public pages;
-  the listing's own video field only takes YouTube/Vimeo URLs).
-- Pricing & Distribution: a $29 tier needs a **bank account on the developer
-  account first** (Developer Settings), which is his to enter.
+- Production developer verification **submitted** 7:57 pm ("VERIFYING ACCOUNT"):
+  Business details, identity and contact info all saved.
+- Market Listing complete: icon, cover, four screenshots, three benefits, tagline,
+  description, legal, support, categories. Overview: functional description saved.
+- Left for Aidan: a **bank account** (Developer Settings) and then a $29 tier under
+  Pricing & Distribution; the **Functional Video** field on Overview wants a
+  YouTube/Vimeo link (upload `site/public/listing/walkthrough.mp4`, served at
+  /listing/walkthrough.mp4, to his own channel as unlisted).
 
 Then "Submit App" on the production app.
 
