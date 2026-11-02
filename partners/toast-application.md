@@ -130,3 +130,5 @@ insured), E&O $2M, and **cyber liability $5M per occurrence**, with certificates
 is a recurring spend, so it's a money gate. Also binding: arbitration (§14), a 6-month non-solicit
 of Toast merchants with 2x-revenue liquidated damages (§7.3), Toast Data may not feed
 "aggregated datasets for sale" (§11), audit rights (§4.7). Waiting on Aidan.
+
+**Decision 2026-11-01 (Aidan): hold Toast.** "if we can get some actual traffic and sales from a different platform and we know it works and will scale then we can go back to it." Reopen only once another platform (Clover first) shows real installs and paid subscriptions; then price the §4.8 insurance and agree.
