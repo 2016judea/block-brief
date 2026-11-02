@@ -2,10 +2,32 @@
   "buildCommand": "echo build",
   "outputDirectory": "public",
   "headers": [
-    { "source": "/example.json", "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }] }
+    {
+      "source": "/example.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
   ],
   "rewrites": [
-    { "source": "/connect", "destination": "/connect/index.html" },
-    { "source": "/connected", "destination": "/connected/index.html" }
+    {
+      "source": "/connect",
+      "destination": "/connect/index.html"
+    },
+    {
+      "source": "/connected",
+      "destination": "/connected/index.html"
+    },
+    {
+      "source": "/clover",
+      "destination": "/api/clover/launch"
+    },
+    {
+      "source": "/clover/callback",
+      "destination": "/api/clover/callback"
+    }
   ]
 }

@@ -2,7 +2,7 @@
 """Write one Monday briefing for one shop: the register's week next to the city's records.
 
     python3 pipeline/brief.py --example            # the landing page's example (sample register, real records)
-    python3 pipeline/brief.py --owner <owner_id>   # a real subscriber: Square payments + records, emailed
+    python3 pipeline/brief.py --owner <owner_id>   # a real subscriber: Square or Clover payments + records, emailed
     python3 pipeline/brief.py --all                # every active owner (the Monday job)
 
 The model (claude-sonnet-5-5) writes prose from a JSON of numbers it did not
@@ -11,8 +11,9 @@ checked: every dollar amount and percentage in the prose must appear in the
 input, or the briefing is not sent.
 
 Needs: ANTHROPIC_API_KEY, MAILGUN_API_KEY, MAILGUN_DOMAIN, CLOUDFLARE_API_TOKEN,
-ACCESS_SECRET (token blobs), SQUARE_ENV (sandbox|production). All but the last
-live in ~/Desktop/bricks/.env; the repo's .env adds the Square ones.
+ACCESS_SECRET (token blobs), SQUARE_ENV and CLOVER_ENV (sandbox|production),
+CLOVER_APP_ID / CLOVER_PROD_APP_ID (token refresh). The first three live in
+~/Desktop/bricks/.env; the repo's .env adds the Square and Clover ones.
 """
 import argparse
 import base64
@@ -24,9 +25,11 @@ import random
 import re
 import statistics
 import sys
+import time
 import urllib.parse
 import urllib.request
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "pipeline"))
@@ -117,6 +120,61 @@ def square_days(token, location_id, start, end, env="production"):
             return days
 
 
+# ---- Clover (Fiserv) ------------------------------------------------------------
+# ~/.claude/skills/clover-api/SKILL.md. Payments carry amount (cents), result (SUCCESS), createdTime
+# (ms). Time filters are capped at 90 days per call (our window is 63), pages are limit/offset, max 1000.
+SHOP_TZ = ZoneInfo("America/Chicago")  # Minneapolis only in v1; Clover keeps the timezone in merchant properties
+
+
+def clover_host(env):
+    return "https://apisandbox.dev.clover.com" if env == "sandbox" else "https://api.clover.com"
+
+
+def clover_app_id(env):
+    return os.environ["CLOVER_APP_ID" if env == "sandbox" else "CLOVER_PROD_APP_ID"]
+
+
+def clover_refresh(tok, env):
+    """Rotate the expiring pair when the access token has under a day left. Refresh tokens are single-use,
+    so the caller must persist what comes back before anything else runs. Returns (tok, rotated)."""
+    if tok.get("access_token_expiration", 0) - time.time() > 24 * 3600:
+        return tok, False
+    req = urllib.request.Request(f"{clover_host(env)}/oauth/v2/refresh",
+                                 data=json.dumps({"client_id": clover_app_id(env), "refresh_token": tok["refresh_token"]}).encode(),
+                                 headers={"content-type": "application/json", "accept": "application/json"})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        j = json.load(r)
+    new = dict(tok, access_token=j["access_token"], refresh_token=j["refresh_token"],
+               access_token_expiration=j["access_token_expiration"], refresh_token_expiration=j["refresh_token_expiration"],
+               previous_refresh_token=tok["refresh_token"])  # the recovery token, if the new pair is ever lost
+    return new, True
+
+
+def clover_days(token, merchant_id, start, end, env="production"):
+    """GET /v3/merchants/{mId}/payments, result SUCCESS only, bucketed by local (Central) day."""
+    t0 = int(dt.datetime.combine(start, dt.time(), SHOP_TZ).timestamp() * 1000)
+    t1 = int(dt.datetime.combine(end, dt.time(), SHOP_TZ).timestamp() * 1000)
+    days, offset = {}, 0
+    while True:
+        q = f"filter=createdTime>={t0}&filter=createdTime<{t1}&limit=1000&offset={offset}"
+        req = urllib.request.Request(f"{clover_host(env)}/v3/merchants/{merchant_id}/payments?{q}",
+                                     headers={"Authorization": f"Bearer {token}", "accept": "application/json"})
+        with urllib.request.urlopen(req, timeout=60) as r:
+            j = json.load(r)
+        els = j.get("elements", [])
+        for p in els:
+            if p.get("result") != "SUCCESS":
+                continue
+            when = dt.datetime.fromtimestamp(p["createdTime"] / 1000, SHOP_TZ)
+            row = days.setdefault(when.date().isoformat(), dict(gross_cents=0, n_payments=0, hours=[0] * 24))
+            row["gross_cents"] += p.get("amount", 0)
+            row["n_payments"] += 1
+            row["hours"][when.hour] += p.get("amount", 0)
+        if len(els) < 1000:
+            return days
+        offset += 1000
+
+
 def sample_days(seed, start, end):
     """A sample register for the landing page: a café's shape, labelled as a sample on the page.
     Deterministic from the seed so the example does not change between builds."""
@@ -200,7 +258,7 @@ def build(shop, days, sig, label_sample=False):
     for s in sig["signals"]:
         if s["kind"] == "street_work" and worst and s.get("filed_date") and s.get("end_date"):
             s["overlaps_worst_day"] = s["filed_date"] <= worst["date"] <= s["end_date"]
-    payload = dict(shop=dict(name=shop["name"], address=shop["address"]), register=summary,
+    payload = dict(shop=dict(name=shop["name"], address=shop["address"], pos=shop.get("pos", "Square")), register=summary,
                    records=dict(radius_ft=sig["radius_ft"], since=sig["since"], signals=sig["signals"], value_history=sig["value_history"]))
     prose = claude_prose(payload)
     bad = check_prose(prose, payload)
@@ -226,7 +284,7 @@ def html_email(b):
 <table style="border-collapse:collapse;font-size:14px">{rows}</table>
 <p style="margin:18px 0 6px;font-weight:600">What the city filed within {b['records']['radius_ft']} ft</p>
 <ul style="padding-left:18px;font-size:14px;margin:0">{recs}</ul>
-<p style="margin:22px 0 0;color:#777;font-size:12px">Every number above is read off your Square account or a public record. <a href="{SITE}" style="color:#777">Block Brief</a> · reply to this email with any question.</p>
+<p style="margin:22px 0 0;color:#777;font-size:12px">Every number above is read off your {b['shop'].get('pos', 'Square')} account or a public record. <a href="{SITE}" style="color:#777">Block Brief</a> · reply to this email with any question.</p>
 </div>"""
 
 
@@ -251,8 +309,17 @@ def d1(sql, params=()):
     return j["result"][0]["results"]
 
 
+def seal_token(obj):
+    """The inverse of open_token, for the rotated Clover pair. Same layout as site/api/_lib.js sealToken."""
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+    key = hashlib.sha256(os.environ["ACCESS_SECRET"].encode()).digest()
+    iv = os.urandom(12)
+    ct_tag = AESGCM(key).encrypt(iv, json.dumps(obj).encode(), None)  # ciphertext || 16-byte tag
+    return base64.b64encode(iv + ct_tag[-16:] + ct_tag[:-16]).decode()
+
+
 def open_token(blob):
-    """AES-256-GCM under ACCESS_SECRET, written by site/api/square/callback.js: base64(iv|tag|ct)."""
+    """AES-256-GCM under ACCESS_SECRET, written by site/api/square/callback.js or clover/callback.js: base64(iv|tag|ct)."""
     from cryptography.hazmat.primitives.ciphers.aead import AESGCM
     key = hashlib.sha256(os.environ["ACCESS_SECRET"].encode()).digest()
     raw = base64.b64decode(blob)
@@ -263,9 +330,18 @@ def open_token(blob):
 def run_owner(o, send=True):
     tok = open_token(o["token_blob"])
     ws, we = week_bounds()
-    days = square_days(tok["access_token"], o["location_id"], ws - dt.timedelta(weeks=9), we, os.environ.get("SQUARE_ENV", "production"))
+    provider = o.get("pos_provider") or "square"
+    if provider == "clover":
+        env = os.environ.get("CLOVER_ENV", "production")
+        tok, rotated = clover_refresh(tok, env)
+        if rotated:  # persist first: the old refresh token is dead the moment the new pair exists
+            exp = dt.datetime.fromtimestamp(tok["access_token_expiration"], dt.timezone.utc).isoformat()
+            d1("update owners set token_blob=?, token_expires_at=?, updated_at=datetime('now') where owner_id=?", (seal_token(tok), exp, o["owner_id"]))
+        days = clover_days(tok["access_token"], o["merchant_id"], ws - dt.timedelta(weeks=9), we, env)
+    else:
+        days = square_days(tok["access_token"], o["location_id"], ws - dt.timedelta(weeks=9), we, os.environ.get("SQUARE_ENV", "production"))
     sig = S.gather(o["lat"], o["lon"], o["parcel_pin"])
-    b = build(dict(name=o["shop_name"], address=o["address"]), days, sig)
+    b = build(dict(name=o["shop_name"], address=o["address"], pos="Clover" if provider == "clover" else "Square"), days, sig)
     if not b["prose_check"]["ok"]:
         print(f"[{o['owner_id']}] NOT SENT: unsourced figures {b['prose_check']['unsourced']}", file=sys.stderr)
         return b
@@ -300,7 +376,7 @@ if __name__ == "__main__":
         if a.to and b["prose_check"]["ok"]:
             print("mailgun", mailgun(a.to, f"Block Brief, week of {b['week_start']}: {shop['name']} (example)", html_email(b), b["prose"]), file=sys.stderr)
     elif a.owner or a.all:
-        where = "where owner_id = ?" if a.owner else "where plan_status in ('active','trial') and token_blob is not null"
+        where = "where owner_id = ?" if a.owner else "where plan_status in ('active','trial','clover') and token_blob is not null"
         for o in d1(f"select * from owners {where}", (a.owner,) if a.owner else ()):
             try:
                 run_owner(o, send=not a.no_send)

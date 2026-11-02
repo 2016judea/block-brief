@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Connect Square · Block Brief</title>
+<title>Connect your register · Block Brief</title>
 <meta name="robots" content="noindex">
 <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)}</script><script defer src="/_vercel/insights/script.js"></script>
 <style>
@@ -12,6 +12,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 -apple-system
 main{max-width:560px;margin:0 auto;padding:40px 20px 60px}
 h1{font-size:26px;line-height:1.2;margin:0 0 10px}
 p{margin:0 0 14px}
+.btn.alt{background:#fff;color:var(--acc);border:2px solid var(--acc);padding:12px 20px}
 .btn{display:inline-block;background:var(--acc);color:#fff;text-decoration:none;font-weight:600;padding:14px 22px;border-radius:10px;font-size:17px}
 .mut{color:var(--mut);font-size:14px}
 .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:18px 0}
@@ -20,21 +21,22 @@ p{margin:0 0 14px}
 <body>
 <main>
 <p class="mut">Block Brief</p>
-<h1 id="h">Paid. One step left: connect your Square account.</h1>
-<p>Square will ask you to let Block Brief <b>read</b> your payments and your location's name and address. Nothing is written to your Square account, ever.</p>
+<h1 id="h">Paid. One step left: connect your register.</h1>
+<p>Square or Clover will ask you to let Block Brief <b>read</b> your payments and your location's name and address. Nothing is written to your account, ever.</p>
 <div class="card">
-<p><a class="btn" id="go" href="#">Connect Square</a></p>
-<p class="mut" style="margin:0">Read-only: merchant profile, payments, orders. You can revoke it any time from your Square dashboard under Apps.</p>
+<p><a class="btn" id="go" href="#">Connect Square</a> <a class="btn alt" id="goc" href="#">Connect Clover</a></p>
+<p class="mut" style="margin:0">Read-only: merchant profile, payments, orders. You can revoke it any time from your Square dashboard under Apps, or from your Clover dashboard under More Tools.</p>
 </div>
 <p class="mut" id="note"></p>
 </main>
 <script>
 (function(){
-  var q=new URLSearchParams(location.search), sid=q.get("session_id"), go=document.getElementById("go");
-  if(q.get("denied")){document.getElementById("h").textContent="Square said no. Try again when you are ready.";document.getElementById("note").textContent="Your subscription is active. Reply to your receipt email if you want a hand.";}
-  if(sid){go.href="/api/square/connect?session_id="+encodeURIComponent(sid); if(window.va)va("event",{name:"paid"}); if(window.posthog)posthog.capture("paid");}
-  else{go.href="/";go.textContent="Start at the beginning";document.getElementById("h").textContent="This page needs a finished checkout.";}
+  var q=new URLSearchParams(location.search), sid=q.get("session_id"), go=document.getElementById("go"), goc=document.getElementById("goc");
+  if(q.get("denied")){document.getElementById("h").textContent=(q.get("pos")==="clover"?"Clover":"Square")+" said no. Try again when you are ready.";document.getElementById("note").textContent="Your subscription is active. Reply to your receipt email if you want a hand.";}
+  if(sid){go.href="/api/square/connect?session_id="+encodeURIComponent(sid); goc.href="/api/clover/connect?session_id="+encodeURIComponent(sid); if(window.va)va("event",{name:"paid"}); if(window.posthog)posthog.capture("paid");}
+  else{go.href="/";go.textContent="Start at the beginning";goc.hidden=true;document.getElementById("h").textContent="This page needs a finished checkout.";}
   go.addEventListener("click",function(){ if(window.va)va("event",{name:"square_connect_open"}); if(window.posthog)posthog.capture("square_connect_open"); });
+  goc.addEventListener("click",function(){ if(window.va)va("event",{name:"clover_connect_open"}); if(window.posthog)posthog.capture("clover_connect_open"); });
 })();
 </script>
 <!-- bm-posthog:begin v2 — shared across every Vercel prototype; source ~/.claude/skills/site-analytics/posthog_snippet.html. ?me=1 opts this browser out on this site (?me=0 undoes); ?me=1&next=host1,host2 walks the opt-out across sites; headless (navigator.webdriver) never loads it. -->

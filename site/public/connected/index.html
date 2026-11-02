@@ -21,19 +21,22 @@ p{margin:0 0 14px}
 <p class="mut">Block Brief</p>
 <h1 id="h">Done. Your first briefing lands Monday morning.</h1>
 <p id="shop"></p>
-<p>It goes to the email on your receipt. It reads last week's Square payments and everything the city filed within 500 feet of your door: street and sidewalk permits, new buildings, new licences, your building's county value, nearby storefront sales.</p>
+<p id="body">It goes to the email on your receipt. It reads last week's <span id="pos">Square</span> payments and everything the city filed within 500 feet of your door: street and sidewalk permits, new buildings, new licences, your building's county value, nearby storefront sales.</p>
 <div class="warn" id="flag" hidden></div>
-<p class="mut">Reply to any briefing with a question. To stop, cancel the subscription from your receipt email; the Square connection can be removed from your Square dashboard under Apps.</p>
+<p class="mut" id="stop">Reply to any briefing with a question. To stop, cancel the subscription from your receipt email; the Square connection can be removed from your Square dashboard under Apps.</p>
 </main>
 <script>
 (function(){
-  var q=new URLSearchParams(location.search), s=q.get("shop"), f=(q.get("flag")||"").split(",").filter(Boolean);
+  var q=new URLSearchParams(location.search), s=q.get("shop"), f=(q.get("flag")||"").split(",").filter(Boolean), pos=q.get("pos")==="clover"?"Clover":"Square";
+  document.getElementById("pos").textContent=pos;
+  if(pos==="Clover"){document.getElementById("stop").textContent="Reply to any briefing with a question. To stop, uninstall Block Brief from your Clover dashboard (More Tools); if you paid on this site, cancel from your receipt email.";}
   if(s)document.getElementById("shop").textContent="Connected: "+s+".";
-  var msg={noaddr:"Square gave us no street address for your location, so we could not place your door on the map yet. We will write to you to confirm the address before Monday.",
+  var msg={noaddr:pos+" gave us no street address for your location, so we could not place your door on the map yet. We will write to you to confirm the address before Monday.",
+           noemail:"Clover did not give us an email address for your account. Reply to the receipt on your Clover statement, or write to aidan@brickandmortar.dev, and we will set it by hand before Monday.",
            nohennepin:"Your address is outside Hennepin County. Block Brief reads Minneapolis records only for now; we will write to you before charging you again.",
            notmpls:"Your address is in Hennepin County but outside Minneapolis. The county value and sales will work; city permits and licences will not, and we will say so in each briefing."};
   if(f.length){var el=document.getElementById("flag");el.hidden=false;el.textContent=f.map(function(k){return msg[k]||k}).join(" ");}
-  if(window.va)va("event",{name:"square_connected"}); if(window.posthog)posthog.capture("square_connected");
+  var ev=pos==="Clover"?"clover_connected":"square_connected"; if(window.va)va("event",{name:ev}); if(window.posthog)posthog.capture(ev);
 })();
 </script>
 <!-- bm-posthog:begin v2 — shared across every Vercel prototype; source ~/.claude/skills/site-analytics/posthog_snippet.html. ?me=1 opts this browser out on this site (?me=0 undoes); ?me=1&next=host1,host2 walks the opt-out across sites; headless (navigator.webdriver) never loads it. -->
