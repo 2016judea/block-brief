@@ -91,7 +91,7 @@ redirect URL is also correct.
 
 ## Running it
 
-    set -a; . ~/Desktop/bricks/.env; set +a        # keys
+    set -a; . ~/Desktop/workspace/bricks/.env; set +a        # keys
     python3 pipeline/brief.py --example             # rebuild the landing example (calls Claude)
     python3 pipeline/brief.py --all --no-send       # dry-run every owner
     python3 scripts/deploy.py                       # Vercel, REST, public/ + api/

@@ -6,7 +6,7 @@
        directly (reference_launchd_cannot_read_desktop), so the job runs a copy of the
        runner from ~/Library/Application Support/block-brief, which symlinks back. Install:
          mkdir -p ~/Library/Application\ Support/block-brief
-         ln -sfn ~/Desktop/block-brief ~/Library/Application\ Support/block-brief/repo
+         ln -sfn ~/Desktop/workspace/block-brief ~/Library/Application\ Support/block-brief/repo
          cp launchd/run_monday.sh ~/Library/Application\ Support/block-brief/
          cp launchd/dev.brickandmortar.block-brief.plist ~/Library/LaunchAgents/
          launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/dev.brickandmortar.block-brief.plist -->

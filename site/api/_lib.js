@@ -1,5 +1,5 @@
 // Shared by the functions. Files starting with "_" are not routes on Vercel.
-// Pattern: ~/Desktop/msp-house-index/site/api/_lib.js (Stripe over fetch, no SDK).
+// Pattern: ~/Desktop/workspace/msp-house-index/site/api/_lib.js (Stripe over fetch, no SDK).
 const crypto = require("crypto");
 
 const SITE = process.env.SITE_URL || "https://block-brief.vercel.app";

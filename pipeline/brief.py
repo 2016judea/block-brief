@@ -13,7 +13,7 @@ input, or the briefing is not sent.
 Needs: ANTHROPIC_API_KEY, MAILGUN_API_KEY, MAILGUN_DOMAIN, CLOUDFLARE_API_TOKEN,
 ACCESS_SECRET (token blobs), SQUARE_ENV and CLOVER_ENV (sandbox|production),
 CLOVER_APP_ID / CLOVER_PROD_APP_ID (token refresh). The first three live in
-~/Desktop/bricks/.env; the repo's .env adds the Square and Clover ones.
+~/Desktop/workspace/bricks/.env; the repo's .env adds the Square and Clover ones.
 """
 import argparse
 import base64
