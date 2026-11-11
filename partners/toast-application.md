@@ -1,6 +1,6 @@
 # Toast Integration Partner application — Block Brief
 
-Prepared 2026-11-01. Nothing has been submitted.
+Prepared 2026-11-01. **Step 1 submitted by Aidan 2026-11-11** (API Terms of Use agreed as Brick and Mortar AI LLC, aidan@brickandmortar.dev). Next: Toast's email with the application form link (step 2), then paste the step 3 answers.
 
 Toast's application is three steps, not one form
 (pos.toasttab.com/partners/integration-partner-application):
