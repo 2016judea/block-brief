@@ -1,6 +1,6 @@
 # Toast Integration Partner application — Block Brief
 
-Prepared 2026-11-01. **Step 1 submitted by Aidan 2026-11-11** (API Terms of Use agreed as Brick and Mortar AI LLC, aidan@brickandmortar.dev). Step 2 email arrived 11/11. **Step 3 form filled headless 2026-11-17, not submitted**: Aidan answers the six blanks and submits (see "Step 3 — form as filled").
+Prepared 2026-11-01. **Step 1 submitted by Aidan 2026-11-11** (API Terms of Use agreed as Brick and Mortar AI LLC, aidan@brickandmortar.dev). Step 2 email arrived 11/11. **Step 3 form submitted 2026-11-17** by Claude on Aidan's instruction (see "Step 3 — form as filled").
 
 Toast's application is three steps, not one form
 (pos.toasttab.com/partners/integration-partner-application):
@@ -110,6 +110,8 @@ restaurant can use it today.
 
 ## Step 3 — form as filled 2026-11-17
 
+**Submitted 2026-11-17** by Claude on Aidan's instruction. Confirmation on the page: "Thank you! Your submission has been received. Please note that due to a very high volume of applications and limited bandwidth, it may up to 30 days for you to receive a response." monday.com returned 201, submission id `d986039b-b406-4db7-99dc-8e1c83d7a8ba`. Screenshot: `partners/toast-form-submitted-2026-11-17.png`.
+
 **Form:** https://pos.toasttab.com/partners/inquiry-request-form. The 11/11 email's
 "Partner Inquiry Request Form" link (go.toasttab.com) redirects there and adds a
 `mkt_tok` tracking parameter. The page embeds a monday.com form titled
@@ -118,35 +120,34 @@ restaurant can use it today.
 form appears only after you pick the purpose, and every field after it is
 required.
 
-It was filled headless and **not submitted**. A guard in the page counted zero
+A first headless pass (earlier 11/17) filled 16 of 22 and stopped before submit; a guard in the page counted zero
 submit attempts. Screenshot: `partners/toast-form-filled-2026-11-17.png` (the
 textareas show only their first lines, but the counters confirm the full text).
-16 of 22 fields are filled. The 6 left blank are required, so the form won't
-submit until they're answered.
+The 6 it left blank were answered with best guesses Aidan approved, all 22 were checked, and the form was submitted once.
 
 | # | Field, as the form shows it | Value entered | From |
 |---|---|---|---|
 | 1 | Company Name | Brick and Mortar AI LLC | Company › Legal name |
 | 2 | What is your purpose of filling out this form? | I wish to develop a technical integration between my product and Toast's APIs | (the other option sends you to refer.toasttab.com) |
-| 3 | What is your TARGET location count of customer brands you work with? | **blank** (options: 1-15, 16-40, 41-500, 500+) | not in this file |
+| 3 | What is your TARGET location count of customer brands you work with? | 1-15 (best guess, Aidan-approved 11/17) | one briefing per location, built for independent Minneapolis owners (options: 1-15, 16-40, 41-500, 500+) |
 | 4 | Which of these categories best describes your product focus? | Commerce | Category: "Analytics / reporting" is not an option. Commerce is "improving the restaurant operations for owners and managers" |
 | 5 | Contact Name | Aidan Jude | Company › Contact |
 | 6 | Contact Email | aidan@brickandmortar.dev | Company › Contact |
-| 7 | Contact Role | **blank** | not in this file |
+| 7 | Contact Role | Founder (best guess, Aidan-approved 11/17) | not in this file |
 | 8 | Company Website | https://brickandmortar.dev | Company › Company website |
 | 9 | What countries do you currently operate within? | United States | Markets (Minneapolis) |
 | 10 | Average Monthly Revenue per Customer | 29 | Pricing ($29 a month per location; this is the price, not a measured average) |
-| 11 | Average customer size (units/locations) | **blank** (the form says: "If SMB focused, put "1".") | customer number, not in this file |
-| 12 | How many customers do you provide services for? | **blank** | customer number, not in this file |
+| 11 | Average customer size (units/locations) | 1 (best guess, Aidan-approved 11/17) | the form says: "If SMB focused, put "1"." |
+| 12 | How many customers do you provide services for? | 0 (best guess, Aidan-approved 11/17) | numeric field; no paying customers yet |
 | 13 | How many of your customers are also Toast customers? | 0 | Mutual customers ("None on Toast yet") |
 | 14 | Please list the names of any customers that are specifically requesting an integration with Toast | None on Toast yet. Block Brief has no Toast integration, so no Toast restaurant can use it today. | Mutual customers / customer demand, verbatim |
-| 15 | How large is your sales team? | **blank** | not in this file (company size is 1) |
+| 15 | How large is your sales team? | 1 (best guess, Aidan-approved 11/17) | free-text field; company size is 1 |
 | 16 | Please provide a brief description of your product | Block A below (1,288 chars) | Describe your integration + Current status, verbatim |
 | 17 | Does your product include payment processing? | No. | no prepared answer; the product reads sales and takes no card data |
 | 18 | Please describe what you would like the integration to do | Block B below (442 chars) | What Toast data do you need? + How often do you call the API?, verbatim |
 | 19 | What level of API access would you require? | Read-Only | Category ("Read-only") |
 | 20 | What other POS companies do you integrate with? (multi-select) | Square, Clover | Current status (Square live, Clover being built) |
-| 21 | Does your organization offer support, products/services or have any initiatives around the following: (language access, disability, marginalized communities) | **blank** (options: Not at this time, Yes) | not in this file |
+| 21 | Does your organization offer support, products/services or have any initiatives around the following: (language access, disability, marginalized communities) | Not at this time (best guess, Aidan-approved 11/17) | options: Not at this time, Yes |
 | 22 | What other POS companies do you integrate with? (text) | Square, Clover (in progress) | Current status |
 
 The form has no field for the EIN, SoS number, phone, mailing address, company size, product URL, integration name or the rest of Pricing.
@@ -177,9 +178,9 @@ Once a week per location, Monday morning, plus a single backfill of nine weeks w
 
 ## Left blank
 
-- On the real form (2026-11-17), six required fields: TARGET location count,
+- On the real form (2026-11-17), six required fields were left blank by the first pass: TARGET location count,
   Contact Role, Average customer size, How many customers, Sales team size, and
-  the language/disability/communities initiatives question. See the table above.
+  the language/disability/communities initiatives question. **All six are now answered** (best guesses, Aidan-approved 11/17; see the table above) and the form was submitted.
 
 ## How Aidan submits
 
