@@ -1,6 +1,6 @@
 # Toast Integration Partner application — Block Brief
 
-Prepared 2026-11-01. **Step 1 submitted by Aidan 2026-11-11** (API Terms of Use agreed as Brick and Mortar AI LLC, aidan@brickandmortar.dev). Next: Toast's email with the application form link (step 2), then paste the step 3 answers.
+Prepared 2026-11-01. **Step 1 submitted by Aidan 2026-11-11** (API Terms of Use agreed as Brick and Mortar AI LLC, aidan@brickandmortar.dev). Step 2 email arrived 11/11. **Step 3 form filled headless 2026-11-17, not submitted**: Aidan answers the six blanks and submits (see "Step 3 — form as filled").
 
 Toast's application is three steps, not one form
 (pos.toasttab.com/partners/integration-partner-application):
@@ -108,10 +108,78 @@ a rebuild.
 None on Toast yet. Block Brief has no Toast integration, so no Toast
 restaurant can use it today.
 
+## Step 3 — form as filled 2026-11-17
+
+**Form:** https://pos.toasttab.com/partners/inquiry-request-form. The 11/11 email's
+"Partner Inquiry Request Form" link (go.toasttab.com) redirects there and adds a
+`mkt_tok` tracking parameter. The page embeds a monday.com form titled
+"Integration Request Application"
+(forms.monday.com/forms/embed/4b133cd258772ce91bbaa045efb04f25). The rest of the
+form appears only after you pick the purpose, and every field after it is
+required.
+
+It was filled headless and **not submitted**. A guard in the page counted zero
+submit attempts. Screenshot: `partners/toast-form-filled-2026-11-17.png` (the
+textareas show only their first lines, but the counters confirm the full text).
+16 of 22 fields are filled. The 6 left blank are required, so the form won't
+submit until they're answered.
+
+| # | Field, as the form shows it | Value entered | From |
+|---|---|---|---|
+| 1 | Company Name | Brick and Mortar AI LLC | Company › Legal name |
+| 2 | What is your purpose of filling out this form? | I wish to develop a technical integration between my product and Toast's APIs | (the other option sends you to refer.toasttab.com) |
+| 3 | What is your TARGET location count of customer brands you work with? | **blank** (options: 1-15, 16-40, 41-500, 500+) | not in this file |
+| 4 | Which of these categories best describes your product focus? | Commerce | Category: "Analytics / reporting" is not an option. Commerce is "improving the restaurant operations for owners and managers" |
+| 5 | Contact Name | Aidan Jude | Company › Contact |
+| 6 | Contact Email | aidan@brickandmortar.dev | Company › Contact |
+| 7 | Contact Role | **blank** | not in this file |
+| 8 | Company Website | https://brickandmortar.dev | Company › Company website |
+| 9 | What countries do you currently operate within? | United States | Markets (Minneapolis) |
+| 10 | Average Monthly Revenue per Customer | 29 | Pricing ($29 a month per location; this is the price, not a measured average) |
+| 11 | Average customer size (units/locations) | **blank** (the form says: "If SMB focused, put "1".") | customer number, not in this file |
+| 12 | How many customers do you provide services for? | **blank** | customer number, not in this file |
+| 13 | How many of your customers are also Toast customers? | 0 | Mutual customers ("None on Toast yet") |
+| 14 | Please list the names of any customers that are specifically requesting an integration with Toast | None on Toast yet. Block Brief has no Toast integration, so no Toast restaurant can use it today. | Mutual customers / customer demand, verbatim |
+| 15 | How large is your sales team? | **blank** | not in this file (company size is 1) |
+| 16 | Please provide a brief description of your product | Block A below (1,288 chars) | Describe your integration + Current status, verbatim |
+| 17 | Does your product include payment processing? | No. | no prepared answer; the product reads sales and takes no card data |
+| 18 | Please describe what you would like the integration to do | Block B below (442 chars) | What Toast data do you need? + How often do you call the API?, verbatim |
+| 19 | What level of API access would you require? | Read-Only | Category ("Read-only") |
+| 20 | What other POS companies do you integrate with? (multi-select) | Square, Clover | Current status (Square live, Clover being built) |
+| 21 | Does your organization offer support, products/services or have any initiatives around the following: (language access, disability, marginalized communities) | **blank** (options: Not at this time, Yes) | not in this file |
+| 22 | What other POS companies do you integrate with? (text) | Square, Clover (in progress) | Current status |
+
+The form has no field for the EIN, SoS number, phone, mailing address, company size, product URL, integration name or the rest of Pricing.
+
+Block A, product description:
+
+```
+Every Monday, one email for one restaurant owner. Last week's sales from their register, next to what the city filed within 500 feet of their door.
+
+The street work permitted outside. A liquor licence granted to the bar two doors down. A 228-unit building permitted across the road. What the county now says the landlord's building is worth, and how that moved year over year. What the storefronts nearby sold for.
+
+An owner sees a slow Tuesday and guesses. Weather, staff, a bad week. Most of the time the answer was filed with the city a week earlier, and nobody joins the two. Block Brief does. If the dip lines up with a gas-company permit on the block, the briefing says so, and it shows the permit.
+
+Every number in the email comes from the owner's own sales or from a public record. The prose is written by a model from that data only, and a check refuses to send if the text carries a figure the data doesn't.
+
+Live at https://block-brief.vercel.app, in Minneapolis. Any Minneapolis address gets what's filed within 500 feet of it, free, no login. The paid briefing runs on Square today: the owner connects read-only by OAuth, pays through Stripe, and the briefing goes out every Monday at 6:10am. Clover is being built now. Toast is next, because restaurants are who this is for.
+```
+
+Block B, what the integration does:
+
+```
+Orders and payments, read-only, for the restaurant's location. Daily totals: gross sales, number of checks, average check, refunds, and an hourly breakdown, for the trailing nine weeks. Plus the location's address, which is the join to the city's records.
+
+Nothing is written back to Toast. No menu, labor, guest or card data.
+
+Once a week per location, Monday morning, plus a single backfill of nine weeks when the restaurant first connects.
+```
+
 ## Left blank
 
-- Any step-3 field that isn't covered above: the form isn't visible until
-  Toast sends the step-1 email.
+- On the real form (2026-11-17), six required fields: TARGET location count,
+  Contact Role, Average customer size, How many customers, Sales team size, and
+  the language/disability/communities initiatives question. See the table above.
 
 ## How Aidan submits
 
