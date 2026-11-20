@@ -11,6 +11,11 @@ module.exports = async (req, res) => {
       form: {
         ui_mode: "embedded_page",
         mode: "subscription",
+        // The buyer sees Block Brief, not the Brick & Mortar account's look (Aidan, 2026-11-20).
+        // Embedded Checkout refuses an icon or logo, so the name and colours are what it carries.
+        "branding_settings[display_name]": "Block Brief",
+        "branding_settings[background_color]": "#f6f8f6",
+        "branding_settings[button_color]": "#1f6f4a",
         "line_items[0][quantity]": "1",
         "line_items[0][price_data][currency]": "usd",
         "line_items[0][price_data][unit_amount]": String(PRICE_USD * 100),
